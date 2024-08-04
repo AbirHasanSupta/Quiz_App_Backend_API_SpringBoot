@@ -17,7 +17,6 @@ public class QuestionService {
     @Autowired
     QuestionDB questionDB;
 
-
     public ResponseEntity<List<Question>> getAllQuestions() {
         try{
             return new ResponseEntity<>(questionDB.findAll(), HttpStatus.OK);
@@ -39,7 +38,6 @@ public class QuestionService {
             e.printStackTrace();
             return new ResponseEntity<>("An error occurred while processing the request.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
     public ResponseEntity<List<Question>> getQuestionsByCategory(String category) {
@@ -60,23 +58,7 @@ public class QuestionService {
             e.printStackTrace();
         }
         return new ResponseEntity<>("Failed", HttpStatus.BAD_REQUEST);
-
     }
-
-    public ResponseEntity<String> deleteQuestion(int id) {
-        if(questionDB.existsById(id)){
-            try {
-                questionDB.deleteById(id);
-                return new ResponseEntity<>("Success", HttpStatus.OK);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            return new ResponseEntity<>("Failed", HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>("Question with this id does not exist.", HttpStatus.NOT_FOUND);
-
-    }
-
 
     public ResponseEntity<String> updateQuestion(int id, Question q) {
         Question existingQuestion = questionDB.findById(id).orElse(null);
@@ -90,6 +72,19 @@ public class QuestionService {
                 existingQuestion.setDifficulty(q.getDifficulty());
                 existingQuestion.setRightAns(q.getRightAns());
                 questionDB.save(existingQuestion);
+                return new ResponseEntity<>("Success", HttpStatus.OK);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return new ResponseEntity<>("Failed", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("Question with this id does not exist.", HttpStatus.NOT_FOUND);
+    }
+
+    public ResponseEntity<String> deleteQuestion(int id) {
+        if(questionDB.existsById(id)){
+            try {
+                questionDB.deleteById(id);
                 return new ResponseEntity<>("Success", HttpStatus.OK);
             }catch (Exception e){
                 e.printStackTrace();
